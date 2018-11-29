@@ -9,6 +9,15 @@ function vis_overview(parentDOM, width, height, data) {
 	const axis_labels = parentDOM.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+	const legend = parentDOM.append("g")
+		.attr("transform", `translate(${width - 50}, ${margin.top})`);
+
+	const legend_line = legend.append("g")
+		.attr("transform", `translate(0, ${margin.top})`);
+
+	const legend_text = legend.append("g")
+		.attr("transform", `translate(10, ${margin.top})`);
+
 	function Time(dateString) {
 		let arr = dateString.split("/")
 		this.month = arr[0];
@@ -20,12 +29,10 @@ function vis_overview(parentDOM, width, height, data) {
 		.domain([
 			d3.min(data, function(d){
 				let t = new Time(d["Date"]);
-				//console.log(+t.year);
 				return t.year;
 			}),
 			d3.max(data, function(d){
 				let t = new Time(d["Date"]);
-				//console.log(+t.year);
 				return t.year;
 			})
 		])
@@ -35,6 +42,9 @@ function vis_overview(parentDOM, width, height, data) {
 		.range([height, 0])
 		.domain([0, 70]); // Needs better solution!!!!!
 
+	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
+		.domain(["Hispanic", "Black", "White", "Other"]);
+
 	let x_axis = chart.append("g");
 	let y_axis = chart.append("g");
 
@@ -42,7 +52,6 @@ function vis_overview(parentDOM, width, height, data) {
 		.key((d) => d["Race"])
 		.map(data);
 
-	console.log(nestedData);
 
 	nestedData.each(function(val, key) {
 		let histogram = d3.histogram()
@@ -54,15 +63,12 @@ function vis_overview(parentDOM, width, height, data) {
 			// .thresholds(x_scale.ticks(30)) // bin number
 
 		let bins = histogram(val);
-		console.log(bins);
 
 		var lineFunc = d3.line()
 			.x(function(d){
-				console.log("I'm x" + x_scale(d.x0))
 				return (x_scale(d.x0) + x_scale(d.x1)) / 2;
 			})
 			.y(function(d){
-				console.log(y_scale(d.length))
 				return y_scale(d.length);
 			})
 			.curve(d3.curveMonotoneX)
@@ -71,7 +77,7 @@ function vis_overview(parentDOM, width, height, data) {
 			.datum(bins)
 			.attr("d", lineFunc)
 			.attr("fill", "none")
-			.attr("stroke", "black")
+			.attr("stroke", color_scale(key))
 			.attr("stroke-width", 4)
 			.attr("stroke-linejoin", "round")
 			.attr("stroke-linecap", "round");
@@ -79,11 +85,9 @@ function vis_overview(parentDOM, width, height, data) {
 		x_scale.range([0, width]) // adjust x scale
           .domain([d3.min(data, function(d){
 			  let t = new Time(d["Date"]);
-			  //console.log(+t.year);
 			  return t.year;
 		  }), d3.max(data, function(d){
 			  let t = new Time(d["Date"]);
-			  //console.log(+t.year);
 			  return t.year;
 		  })]);
 
@@ -109,6 +113,28 @@ function vis_overview(parentDOM, width, height, data) {
 			.style("font-size", "10px")
 			.text("Count");
 	})
+
+	// create legend
+	legend_line.selectAll("rect")
+		.data(["White", "Black", "Hispanic", "Other"])
+		.enter()
+		.append("rect")
+		.attr("fill", (d) => color_scale(d))
+		.attr("x", 0)
+		.attr("y", (d, i) => i * 30)
+		.attr("width", 40)
+		.attr("height", 3);
+
+	legend_text.selectAll("text")
+		.data(["White", "Black", "Hispanic", "Other"])
+		.enter()
+		.append("text")
+		.attr("x", 35)
+		.attr("y", (d, i) => i * 30 + 5)
+		.text((d) => d);
+
+
+
 	/*
 	let histogram = d3.histogram()
 		.value((d))
