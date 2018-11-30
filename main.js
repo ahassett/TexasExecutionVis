@@ -1,8 +1,8 @@
 
 const SVG = d3.select("#vis_area");
 
-const HEIGHT = 600;
-const WIDTH = 600;
+const HEIGHT = 800;
+const WIDTH = 800;
 
 const margin = {
 	top: 10,
@@ -23,7 +23,7 @@ d3.csv("http://127.0.0.1:80/Execution.csv").then(function(data){
 	const sec2 = vis_dashboard;
 
 	// sec1(SVG, 400, 400, data);
-	sec2(SVG, 400, 300, data); 
+	sec2(SVG, 700, 300, data);
 
 
 });
