@@ -16,12 +16,14 @@ SVG.attr("width", WIDTH + margin.left + margin.right)
 
 
 
-d3.csv("http://127.0.0.1/Execution.csv").then(function(data){
+d3.csv("http://127.0.0.1:80/Execution.csv").then(function(data){
 	console.log(data);
 
-	const sec1 = vis_overview(SVG, HEIGHT, WIDTH, data);
+	const sec1 = vis_overview;
+	const sec2 = vis_dashboard;
 
-	sec1(SVG, 600, 600, data); 
+	// sec1(SVG, 400, 400, data);
+	sec2(SVG, 400, 300, data); 
 
 
 });

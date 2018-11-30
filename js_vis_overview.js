@@ -1,15 +1,17 @@
 function vis_overview(parentDOM, width, height, data) {
 
+	parentDOM.html("");
+
 	const margin = {top: 10, right: 30, left: 40, bottom: 20}
 
 	const chart = parentDOM.append("g")
 		.attr("id", "overview")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-	const axis_labels = parentDOM.append("g")
+	const axis_labels = chart.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-	const legend = parentDOM.append("g")
+	const legend = chart.append("g")
 		.attr("transform", `translate(${width - 50}, ${margin.top})`);
 
 	const legend_line = legend.append("g")
@@ -54,6 +56,8 @@ function vis_overview(parentDOM, width, height, data) {
 
 
 	nestedData.each(function(val, key) {
+		if (key == "Other") return; 
+
 		let histogram = d3.histogram()
 			.value((d) => {
 				let t = new Time(d["Date"]);
@@ -132,13 +136,6 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("x", 35)
 		.attr("y", (d, i) => i * 30 + 5)
 		.text((d) => d);
-
-
-
-	/*
-	let histogram = d3.histogram()
-		.value((d))
-	*/
 
 	return function(){};
 
