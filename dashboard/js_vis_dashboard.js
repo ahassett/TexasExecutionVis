@@ -25,7 +25,6 @@ function vis_dashboard(parentDOM, width, height, data) {
 		.attr("tramsform", `translate(${margin.left}, ${2 * margin.top + height})`);
 	*/
 
-
 	const legend_age = chart_age.append("g")
 		.attr("transform", `translate(${width - 50}, ${margin.top})`);
 
@@ -79,6 +78,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 			.data(bins)
 			.enter()
 			.append("rect")
+			.classed("rect_" + key, true)
 			.attr("x", (d) => x_scale(d.x0))
 			.attr("y", (d) => y_scale(d.length))
 			.attr("width", (d) => x_scale(d.x1) - x_scale(d.x0))
@@ -104,13 +104,38 @@ function vis_dashboard(parentDOM, width, height, data) {
 		  .style("font-size", "10px")
 		  .text("Count");
 
+		// horizontal brush
+		let brush = d3.brushX().extent([[0,0], [sub_width, height]]);
+
+		// brush event handler
+		brush.on("brush", function(d){
+		  let extent = d3.event.selection;
+
+		  if(extent != null){
+			  let x_extent = [extent[0], extent[1]].map(x_scale.invert);
+
+			  sub_chart.selectAll(".rect_" + key).classed("deselected", function(d){
+				  return (d.x0 < d3.min(x_extent) || d.x1 > d3.max(x_extent))
+			  })
+		  }
+		})
+		brush.on("end", function(d){
+		  if (d3.event.selection == null){
+			  sub_chart.selectAll(".rect_" + key).classed("deselected", false);
+			  }
+		  })
+
+		brush.on("start", function(d){
+		  if (d3.event.sourceEvent.type === "mousedown"){
+			  d3.selectAll(".rect_" + key).classed("deselected", false);
+			  d3.selectAll(".brush").call(brush.move, null);
+		  }
+		})
+		// brush container
+		let brush_g = sub_chart.append("g").classed("brush", true).call(brush);
+
+
 	});
-
-	x_scale.range([0, width]) // adjust x scale
-	  .domain([d3.min(data, (d) => d["Age"]), d3.max(data, (d)=> d["Age"])]);
-
-	y_scale.range([height, 0]) // adjust y scale
-	  .domain([0, 70]); // adjust to scale to max
 
 
 	return function(){};

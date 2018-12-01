@@ -16,7 +16,7 @@ SVG.attr("width", WIDTH + margin.left + margin.right)
 
 
 
-d3.csv("http://127.0.0.1:80/Execution.csv").then(function(data){
+d3.csv("http://127.0.0.1:80/_data/Execution.csv").then(function(data){
 	console.log(data);
 
 	const sec1 = vis_overview;
