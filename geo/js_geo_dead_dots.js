@@ -1,3 +1,4 @@
+
 d3.csv("http://127.0.0.1:80/_data/Execution.csv").then(function(data){
 	console.log(data);
 
@@ -5,13 +6,25 @@ d3.csv("http://127.0.0.1:80/_data/Execution.csv").then(function(data){
 		.key((d) => d["County"])
 		.map(data);
 
+	function getBoundingBoxCenter (selection) {
+		// get the DOM element from a D3 selection
+		// you could also use "this" inside .each()
+		var element = selection.node();
+		// use the native SVG interface to get the bounding box
+		var bbox = element.getBBox();
+		// return the center of the bounding box
+		return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+	}
 
-	console.log(byCounty);
+	var BB = getBoundingBoxCenter(d3.select("#Andrews"));
 
-	color_scale = d3.scaleQuantize()
-		.range(colorbrewer.YlGnBu[9])
-		.domain([minCount(byCounty), maxCount(byCounty)]);
+	d3.select("svg").append("circle")
+		.attr("cx", BB[0])
+		.attr("cy", BB[1])
+		.attr("r", 50);
 
+
+	/*
 	// color by criminal count
 	byCounty.each(function(val, key){
 		let county_name = key;
@@ -39,6 +52,6 @@ d3.csv("http://127.0.0.1:80/_data/Execution.csv").then(function(data){
 	d3.selectAll(".cls-2").on("mouseout", function(){
 		d3.select("#tooltip").classed("hidden", true);
 	})
-
+	*/
 
 });
