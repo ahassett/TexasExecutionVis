@@ -14,7 +14,7 @@ function maxCount(nested) {
 	return max;
 }
 
-d3.csv("http://127.0.0.1:80/_data/Execution.csv").then(function(data){
+d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 	console.log(data);
 
 	const byCounty = d3.nest()
