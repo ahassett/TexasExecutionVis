@@ -1,7 +1,4 @@
 
-const SVG = d3.select("#vis_area");
-const TEXAS = d3.select("#Layer_1");
-
 const HEIGHT = 800;
 const WIDTH = 800;
 
@@ -12,32 +9,40 @@ const margin = {
 	bottom: 20
 }
 
-SVG.attr("width", WIDTH + margin.left + margin.right)
-	.attr("height", HEIGHT + margin.top + margin.bottom);
-
-
-
-d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
-	console.log(data);
-
+Promise.all([
+	// d3.csv("Execution.csv"),
+	// d3.html("http://127.0.0.1:8000/geo/Texas_map.html")
+]).then(function(data){
+	console.log(data[0]);
+	console.log(data[1]);
+	/*
 	const vis_funcs = {
 		"step1": {
 			"f": vis_overview,
 			"width": 400,
 			"height": 400,
-			"prtDOM": SVG
+			"DOMs": [
+				$('<svg id="vis_area"></svg>')
+			],
+			"prtDOMid": "#vis_area"
 		},
 		"step2": {
 			"f": vis_map,
 			"width": 800,
 			"height": 800,
-			"prtDOM": TEXAS
+			"DOMs": [
+
+			],
+			"prtDOMid": "#Layer_1"
 		},
 		"step3": {
 			"f": vis_dashboard,
 			"width": 700,
 			"height": 300,
-			"prtDOM": SVG
+			"DOMs": [
+				$('<svg id="vis_area"></svg>')
+			],
+			"prtDOMid": "#vis_area"
 		}
 	}
 
@@ -46,9 +51,6 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 	switchAnnotation("step1");
 	switchVis("step1");
 
-	/*--------------
-	* Stepper
-	---------------*/
 	function switchStep(newStep) {
 		d3.selectAll(".step_link").classed("active", false);
 		d3.selectAll("#" + newStep).classed("active", true);
@@ -68,9 +70,16 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 
 	function switchVis(newStep) {
 		let that = vis_funcs[newStep];
-		d3.selectAll("svg").classed("hidden", true);
-		that["prtDOM"].classed("hidden", false);
-		that["f"](that["prtDOM"], that["width"], that["height"], data);
+		let vis = $("#vis_canvas");
+		vis.html('');
+		for (let i = 0; i < that["DOMs"].length; i++) {
+			vis.append(that["DOMs"][i])
+		}
+		let prtDOM  = d3.select(that["prtDOMid"]);
+		prtDOM.attr("width", WIDTH + margin.left + margin.right)
+			.attr("height", HEIGHT + margin.top + margin.bottom);
+		that["f"](prtDOM, that["width"], that["height"], data);
+
 	}
 
 	d3.selectAll(".step_link").on("click", function(d){
@@ -80,8 +89,6 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 		switchVis(clickedStep);
 		return false;
 	});
-
-	$("#test").load("http://127.0.0.1:8000/geo/texas.html #race-checkbox"); 
-
+*/
 
 });
