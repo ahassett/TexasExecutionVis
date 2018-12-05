@@ -109,30 +109,32 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 		// brush event handler
 		brush.on("brush", function(d){
-		  let extent = d3.event.selection;
+			let extent = d3.event.selection;
 
-		  if(extent != null){
-			  let x_extent = [extent[0], extent[1]].map(x_scale.invert);
+			if(extent != null){
+				let x_extent = [extent[0], extent[1]].map(x_scale.invert);
 
-			  sub_chart.selectAll(".rect_" + key).classed("deselected", function(d){
-				  return (d.x0 < d3.min(x_extent) || d.x1 > d3.max(x_extent))
-			  })
-		  }
-		})
+				sub_chart.selectAll(".rect_" + key).classed("deselected", function(d){
+			  		return (d.x0 < d3.min(x_extent) || d.x1 > d3.max(x_extent))
+				});
+			}
+		});
+
 		brush.on("end", function(d){
-		  if (d3.event.selection == null){
-			  sub_chart.selectAll(".rect_" + key).classed("deselected", false);
-			  }
-		  })
+			if (d3.event.selection == null){
+				sub_chart.selectAll(".rect_" + key).classed("deselected", false);
+			}
+		})
 
 		brush.on("start", function(d){
-		  if (d3.event.sourceEvent.type === "mousedown"){
-			  d3.selectAll(".rect_" + key).classed("deselected", false);
-			  d3.selectAll(".brush").call(brush.move, null);
-		  }
+			if (d3.event.sourceEvent.type === "mousedown"){
+				d3.selectAll(".rect_" + key).classed("deselected", false);
+				d3.selectAll(".brush").call(brush.move, null);
+			}
 		})
 		// brush container
 		let brush_g = sub_chart.append("g").classed("brush", true).call(brush);
+
 
 
 	});

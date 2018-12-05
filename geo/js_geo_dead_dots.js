@@ -1,6 +1,5 @@
-const SVG = d3.select(".texas")
 
-d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
+function vis_map(parentDOM, width, height, data) {
 	console.log(data);
 
 	let current = null; //used in checkbox action listener
@@ -9,7 +8,7 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 		.key((d) => d["County"])
 		.map(data);
 
-	let circle_g = SVG.append("g");
+	let circle_g = parentDOM.append("g");
 
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 		.domain(["Hispanic", "Black", "White"]);
@@ -65,7 +64,7 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 		let state_name = d3.select(this).attr("id");
 		const coord = [d3.event.pageX, d3.event.pageY] // coordinate of mouse
 		d3.select("#county_name").text(state_name);
-        d3.select("#number_executions").text(state_name.length);
+		d3.select("#number_executions").text(state_name.length);
 
 		d3.select("#tooltip")
 			.classed("hidden", false)
@@ -123,5 +122,4 @@ d3.csv("http://127.0.0.1:8000/_data/Execution.csv").then(function(data){
 		}
 
 	});
-
-});
+}
