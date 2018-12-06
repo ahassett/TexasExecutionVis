@@ -1,6 +1,6 @@
 
-const HEIGHT = 800;
-const WIDTH = 800;
+const HEIGHT = 600;
+const WIDTH = 600; //800
 
 const margin = {
 	top: 10,
@@ -28,10 +28,10 @@ Promise.all([
 		},
 		"step2": {
 			"f": vis_map,
-			"width": 800,
-			"height": 800,
+			"width": 400,
+			"height": 400,
 			"DOMs": [
-
+				data[1].querySelector("svg").outerHTML
 			],
 			"prtDOMid": "#Layer_1"
 		},
@@ -76,6 +76,7 @@ Promise.all([
 			vis.append(that["DOMs"][i])
 		}
 		let prtDOM  = d3.select(that["prtDOMid"]);
+		console.log(prtDOM);
 		prtDOM.attr("width", WIDTH + margin.left + margin.right)
 			.attr("height", HEIGHT + margin.top + margin.bottom);
 		that["f"](prtDOM, that["width"], that["height"], data[0]);
