@@ -10,12 +10,12 @@ const margin = {
 }
 
 Promise.all([
-	// d3.csv("Execution.csv"),
-	// d3.html("http://127.0.0.1:8000/geo/Texas_map.html")
+	d3.csv("_data/Execution.csv"),
+	d3.svg("geo/Texas_map.html")
 ]).then(function(data){
 	console.log(data[0]);
 	console.log(data[1]);
-	/*
+
 	const vis_funcs = {
 		"step1": {
 			"f": vis_overview,
@@ -78,7 +78,7 @@ Promise.all([
 		let prtDOM  = d3.select(that["prtDOMid"]);
 		prtDOM.attr("width", WIDTH + margin.left + margin.right)
 			.attr("height", HEIGHT + margin.top + margin.bottom);
-		that["f"](prtDOM, that["width"], that["height"], data);
+		that["f"](prtDOM, that["width"], that["height"], data[0]);
 
 	}
 
@@ -89,6 +89,6 @@ Promise.all([
 		switchVis(clickedStep);
 		return false;
 	});
-*/
+
 
 });
