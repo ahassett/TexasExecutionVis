@@ -51,9 +51,10 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("cx", 5)
 		.attr("cy", (d, i) => i * 500)
 		.attr("r", 100)
-		.style("stroke-width", 50)
-    	.style("stroke", (d) => color_scale(d))
-    	.style("fill", "none") // initial circles are not filled
+		.attr("stroke-width", 50)
+    	.attr("stroke", (d) => color_scale(d))
+    	.attr("fill", (d)=> color_scale(d)) // initial circles are not filled
+		.classed("selected", true);
 
 	legend_circles = legend_circles.merge(new_circles);
 
@@ -66,6 +67,26 @@ function vis_map(parentDOM, width, height, data) {
 	.style("font-size", 300)
 	.text((d)=> d)
 
+	// event handler for legend
+	legend_circles.on("click", function(d){
+
+		// if deselected
+		if (d3.select(this).classed("selected")){
+			d3.select(this)
+				.classed("selected", false)
+				.attr("fill", "white");
+
+			circle_g.selectAll(".dot_" + d).classed("hidden", true)
+		}
+		// if selected
+		else{
+			d3.select(this)
+				.classed("selected", true)
+				.attr("fill", color_scale(d));
+
+			circle_g.selectAll(".dot_" + d).classed("hidden", false);
+		}
+	})
 
 
 
