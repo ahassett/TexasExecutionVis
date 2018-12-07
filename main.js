@@ -1,6 +1,6 @@
 
-const HEIGHT = 600;
-const WIDTH = 600; //800
+const HEIGHT = 1500;
+const WIDTH = 2000; //800
 
 const margin = {
 	top: 10,
@@ -37,7 +37,7 @@ Promise.all([
 		},
 		"step3": {
 			"f": vis_dashboard,
-			"width": 700,
+			"width": 1000,
 			"height": 300,
 			"DOMs": [
 				$('<svg id="vis_area"></svg>')
