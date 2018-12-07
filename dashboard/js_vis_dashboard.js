@@ -1,5 +1,5 @@
 function vis_dashboard(parentDOM, width, height, data) {
-
+	alert("screw it!");
 	function Time(dateString) {
 		let arr = dateString.split("/")
 		this.month = arr[0];
@@ -34,6 +34,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 	const legend_age_text = legend_age.append("g")
 		.attr("transform", `translate(10, ${margin.top})`);
 
+	// width of each sub chart
 	let sub_width = width / 3.5;
 
 	let x_scale = d3.scaleLinear()
@@ -42,7 +43,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 	let y_scale = d3.scaleLinear()
 		.range([height, 0])
-		.domain([0, 70])
+		.domain([0, 35])
 
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 		.domain(["Hispanic", "Black", "White"]);
@@ -58,22 +59,46 @@ function vis_dashboard(parentDOM, width, height, data) {
 		i++;
 		let histogram = d3.histogram()
 			.value((d) => d["Age"])
-			.domain(x_scale.domain());
+			.domain(x_scale.domain())
+			.thresholds(x_scale.ticks(30));
 
 		let bins = histogram(val);
 
-		console.log(bins);
-
-
-
 		let sub_chart = chart_age.append("g")
-			.attr("transform", `translate(${width * i / 3}, ${0})`);
+			.attr("transform", `translate(${width * i / 3}, ${0})`)
+			.attr("id", "age_" + key);
 
 		let x_axis = sub_chart.append("g");
 		let y_axis = sub_chart.append("g");
 
 		const axis_labels = sub_chart.append("g");
 
+		let cols = sub_chart.selectAll(".col")
+			.data(bins);
+
+		let newCols = cols.enter()
+			.append("g")
+			.classed("col", true)
+			.classed("col_" + key, true)
+			.attr("transform", (d) => `translate(${x_scale(d.x0)}, ${0})`);
+
+		cols = cols.merge(newCols);
+
+		let circles = cols.selectAll("circle")
+			.data((d) => d);
+
+		newCircles = circles.enter()
+			.append("circle")
+			.attr("cx", sub_width / bins.length / 2)
+			.attr("cy", (d, i) => y_scale(i + 1) + sub_width / bins.length / 5)
+			.attr("r", 5)
+			.attr("fill", color_scale(key));
+
+		circles = circles.merge(newCircles);
+
+
+
+		/*
 		sub_chart.selectAll("rect")
 			.data(bins)
 			.enter()
@@ -84,6 +109,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 			.attr("width", (d) => x_scale(d.x1) - x_scale(d.x0))
 			.attr("height", (d) => height - y_scale(d.length))
 			.attr("fill", color_scale(key));
+		*/
 
 		x_axis.attr("transform", `translate(0, ${height})`) // adjust x axis with new x scale
 		  .call(d3.axisBottom(x_scale))
