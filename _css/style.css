@@ -1,4 +1,4 @@
-.deselected{
+.deselected circle{
 	fill:lightgray !important;
 }
 
@@ -18,5 +18,5 @@
 }
 
 ul {
-	list-style: none; 
+	list-style: none;
 }

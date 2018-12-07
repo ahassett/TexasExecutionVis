@@ -112,7 +112,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 				.attr("cx", sub_width / bins.length / 2)
 				.attr("cy", (d, i) => y_scale(i + 1) + sub_width / bins.length / 5)
 				.attr("r", 5)
-				.attr("fill", color_scale(key));
+				.style("fill", color_scale(key));
 
 			circles = circles.merge(newCircles);
 
@@ -152,13 +152,20 @@ function vis_dashboard(parentDOM, width, height, data) {
 				if(extent != null){
 					let x_extent = [extent[0], extent[1]].map(x_scale.invert);
 
-					sub_chart.selectAll(".col").classed("deselected", function(d){
+					ROWS[param].selectAll(".col").classed("deselected", function(d){
 				  		return (d.x0 < d3.min(x_extent) || d.x1 > d3.max(x_extent))
 					});
 				} else {
-					parentDOM.selectAll("circle").classed("deselected", false);
+					parentDOM.selectAll(".col").classed("deselected", false);
 				}
 			});
+
+
+
+
+
+
+
 
 			brush.on("end", function(d){
 				if (d3.event.selection == null){
