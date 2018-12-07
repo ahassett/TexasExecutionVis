@@ -83,7 +83,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 			let sub_chart = ROWS[param].append("g")
 				.attr("transform", `translate(${width * i / 3}, ${0})`)
-				.attr("id", "age_" + key);
+				.attr("id", param + "_" + key);
 
 			let x_axis = sub_chart.append("g");
 			let y_axis = sub_chart.append("g");
@@ -107,6 +107,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 			newCircles = circles.enter()
 				.append("circle")
+				.attr("class", (d)=>"exeid_"+d["Execution"])  // No idea why using "classed" function won't work for this line
 				.classed("dot_" + param, true)
 				.classed("dot_" + key, true)
 				.attr("cx", sub_width / bins.length / 2)
@@ -152,33 +153,57 @@ function vis_dashboard(parentDOM, width, height, data) {
 				if(extent != null){
 					let x_extent = [extent[0], extent[1]].map(x_scale.invert);
 
-					ROWS[param].selectAll(".col").classed("deselected", function(d){
+					ROWS[param].selectAll(".col").classed("delighted", function(d){
 				  		return (d.x0 < d3.min(x_extent) || d.x1 > d3.max(x_extent))
 					});
+
+					ROWS[param].selectAll(".col").classed("highlighted", function(d){
+				  		return (d.x0 >= d3.min(x_extent) && d.x1 <= d3.max(x_extent))
+					});
+
+
+
 				} else {
+					parentDOM.selectAll(".col").classed("delighted", false);
+					parentDOM.selectAll(".col").classed("highlighted", false);
+					parentDOM.selectAll(".col").classed("selected", false);
 					parentDOM.selectAll(".col").classed("deselected", false);
+					parentDOM.selectAll("circle").classed("delighted", false);
+					parentDOM.selectAll("circle").classed("highlighted", false);
+					parentDOM.selectAll("circle").classed("selected", false);
+					parentDOM.selectAll("circle").classed("deselected", false);
 				}
 			});
 
-
-
-
-
-
-
-
 			brush.on("end", function(d){
+
 				if (d3.event.selection == null){
 					sub_chart.selectAll(".rect_" + key).classed("deselected", false);
+				} else {
+					if (d3.event.sourceEvent.type === "mouseup") {
+						console.log(d3.event)
+						// select across column
+						d3.selectAll(".delighted").selectAll("circle").each(function(){
+
+							let classList = d3.select(this).attr("class").split(" ");
+							for (let i = 0; i < classList.length; i++){
+								if (classList[i].slice(0, 5) == "exeid")  {
+									d3.selectAll("." + classList[i]).classed("deselected", true);
+								}
+							}
+
+						});
+					}
 				}
-			})
+			});
 
 			brush.on("start", function(d){
 				if (d3.event.sourceEvent.type === "mousedown"){
 					d3.selectAll(".rect_" + key).classed("deselected", false);
 					d3.selectAll(".brush").call(brush.move, null);
 				}
-			})
+			}); 
+
 			// brush container
 			let brush_g = sub_chart.append("g").classed("brush", true).call(brush);
 

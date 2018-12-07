@@ -1,4 +1,4 @@
-.deselected circle{
+.deselected, .deselected > *, .delighted, .delighted > *{
 	fill:lightgray !important;
 }
 
