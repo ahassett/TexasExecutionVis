@@ -86,7 +86,81 @@ function vis_map(parentDOM, width, height, data) {
 
 			circle_g.selectAll(".dot_" + d).classed("hidden", false);
 		}
-	})
+	});
+
+	/*
+	* Freaking animation
+	*/
+	const trigger = parentDOM.append("rect")
+		.attr("x", 8000)
+		.attr("y", 500)
+		.attr("width", 1000)
+		.attr("height", 1000)
+		.attr("fill", "black");
+
+	// some time objects
+	let formatDateIntoYear = d3.timeFormat("%Y");
+	let formatDate = d3.timeFormat("%b %Y");
+	let parseDate = d3.timeParse("%m/%d/%y");
+
+	// slider
+	let slide_width = 6000;
+	let startYear = new Date("01/01/1982");
+	let endYear = new Date("12/31/2018");
+	let moving = false;
+	let currVal = 0;
+	let targetVal = slide_width;
+
+	let x_slide = d3.scaleTime()
+		.domain([startYear, endYear])
+		.range([0, slide_width])
+		.clamp(true);
+
+	// components of sliders
+	let slider = parentDOM.append("g")
+		.attr("class", "slider")
+		.attr("transform", "translate(500, 500)");
+
+	slider.append("line")
+		.attr("class", "track")
+		.attr("x1", x_slide.range()[0])
+		.attr("x2", x_slide.range()[1])
+		.select(function(){return this.parentNode.appendChild(this.cloneNode(true));}) // what?
+		.attr("class", "track-inset")
+		.select(function(){return this.parentNode.appendChild(this.cloneNode(true));}) // what?
+		.attr("class", "track-overlay")
+		.call(d3.drag()
+			.on("start.interrupt", function(){slider.interrupt();})
+			.on("start drag", function(){
+				currVal = d3.event.x;
+				update(x_slide.invert(currVal));
+			})
+		);
+
+	let handle = slider.insert("circle", ".track-overlay")
+		.attr("class", "handle")
+		.attr("r", 150);
+
+	let label = slider.append("text")
+		.attr("class", "label")
+		.attr("text-anchor", "middle")
+		.text(formatDate(startDate))
+		.attr("transfrom", "translate(500, 450)");
+
+	function update(h) {
+		// update position and text of label according to slider scale
+		handle.attr("cx", x_slide(h));
+
+		label.attr("x", x_slide(h))
+		 	.text(formatDate(h));
+
+		// filter dataset and redraw plot
+		let newData = data.filter((d) => d["Date"] == h); // keep an eye on how to get the Year of d["Date"]
+	}
+
+	trigger.on("click", function(){
+
+	});
 
 
 
