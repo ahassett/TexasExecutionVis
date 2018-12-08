@@ -10,34 +10,39 @@ function vis_map(parentDOM, width, height, data) {
 	let legend_g = parentDOM.append("g")
 		.attr("transform", `translate(${10000}, ${500})`);
 
-
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 		.domain(["Hispanic", "Black", "White"]);
 
-	function getBoundingBoxCenter (selection) {
-		// get the DOM element from a D3 selection
-		// you could also use "this" inside .each()
-		var element = selection.node();
-		// use the native SVG interface to get the bounding box
-		var bbox = element.getBBox();
-		// randomly generate a point within path
+	function drawCircles(dataset) {
+		function getBoundingBoxCenter (selection) {
+			// get the DOM element from a D3 selection
+			// you could also use "this" inside .each()
+			var element = selection.node();
+			// use the native SVG interface to get the bounding box
+			var bbox = element.getBBox();
+			// randomly generate a point within path
 
-		let newX = bbox.x + Math.floor(Math.random() * bbox.width);
-		let newY = bbox.y + Math.floor(Math.random() * bbox.height);
-		return [newX, newY];
+			let newX = bbox.x + Math.floor(Math.random() * bbox.width);
+			let newY = bbox.y + Math.floor(Math.random() * bbox.height);
+			return [newX, newY];
+		}
+
+		dataset.forEach(function(d){
+			that = d3.select("#" + d["County"].replace(" ", "_")) ;
+
+			circle_g.append("circle")
+				.attr("cx", getBoundingBoxCenter(that)[0])
+				.attr("cy", getBoundingBoxCenter(that)[1])
+				.attr("r", 40)
+				.attr("fill", color_scale(d["Race"]))
+				.classed("dot_" + d["Race"], true);
+
+		});
 	}
 
-	data.forEach(function(d){
-		that = d3.select("#" + d["County"].replace(" ", "_")) ;
+	drawCircles(data);
 
-		circle_g.append("circle")
-			.attr("cx", getBoundingBoxCenter(that)[0])
-			.attr("cy", getBoundingBoxCenter(that)[1])
-			.attr("r", 40)
-			.attr("fill", color_scale(d["Race"]))
-			.classed("dot_" + d["Race"], true);
 
-	});
 
 	/*-------------
 	Legend
@@ -105,14 +110,14 @@ function vis_map(parentDOM, width, height, data) {
 
 	// slider
 	let slide_width = 6000;
-	let startYear = new Date("01/01/1982");
-	let endYear = new Date("12/31/2018");
+	let startDate = new Date("01/01/1982");
+	let endDate = new Date("12/31/2018");
 	let moving = false;
 	let currVal = 0;
 	let targetVal = slide_width;
 
 	let x_slide = d3.scaleTime()
-		.domain([startYear, endYear])
+		.domain([startDate, endDate])
 		.range([0, slide_width])
 		.clamp(true);
 
@@ -121,6 +126,7 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("class", "slider")
 		.attr("transform", "translate(500, 500)");
 
+	// the main slide
 	slider.append("line")
 		.attr("class", "track")
 		.attr("x1", x_slide.range()[0])
@@ -137,6 +143,22 @@ function vis_map(parentDOM, width, height, data) {
 			})
 		);
 
+	console.log(x_slide.ticks(10));
+	// the ticks
+	slider.insert("g", ".track-overlay")
+		.attr("class", "ticks")
+		.attr("transform", "translate(0, 250)")
+		.selectAll("text")
+		.data(x_slide.ticks(11))
+		.enter()
+		.append("text")
+		.attr("x", (d) => x_slide(d))
+		.attr("y", -20)
+		.attr("text-anchor", "middle")
+		.style("font-size", "150px")
+		.text(function(d){return formatDateIntoYear(d); })
+		.style("font-size", 2000)
+
 	let handle = slider.insert("circle", ".track-overlay")
 		.attr("class", "handle")
 		.attr("r", 150);
@@ -144,8 +166,11 @@ function vis_map(parentDOM, width, height, data) {
 	let label = slider.append("text")
 		.attr("class", "label")
 		.attr("text-anchor", "middle")
+		.attr("x", 0)
+		.attr("y", -170)
+		.style("font-size", "150px")
 		.text(formatDate(startDate))
-		.attr("transfrom", "translate(500, 450)");
+		// .attr("transfrom", "translate(500, 0)");
 
 	function update(h) {
 		// update position and text of label according to slider scale
@@ -156,6 +181,7 @@ function vis_map(parentDOM, width, height, data) {
 
 		// filter dataset and redraw plot
 		let newData = data.filter((d) => d["Date"] == h); // keep an eye on how to get the Year of d["Date"]
+		drawPlot(newData);
 	}
 
 	trigger.on("click", function(){
