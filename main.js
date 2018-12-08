@@ -11,6 +11,7 @@ const margin = {
 
 // some time objects
 let formatDateIntoYear = d3.timeFormat("%Y");
+let formatDateIntoMonth = d3.timeFormat("%m"); 
 let formatDate = d3.timeFormat("%b %Y");
 let parseDate = d3.timeParse("%m/%d/%Y");
 

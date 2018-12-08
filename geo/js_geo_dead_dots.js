@@ -97,12 +97,22 @@ function vis_map(parentDOM, width, height, data) {
 	/*
 	* Freaking animation
 	*/
-	const trigger = parentDOM.append("rect")
-		.attr("x", 8000)
-		.attr("y", 500)
+	const trigger = parentDOM.append("g")
+		.attr("transform", "translate(8000, 500)");
+
+	trigger.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
 		.attr("width", 1000)
 		.attr("height", 1000)
 		.attr("fill", "black");
+
+	let indicator = trigger.append('text')
+		.style("font-size", "350px")
+		.attr("fill", "white")
+		.attr("x", 150)
+		.attr("y", 250)
+		.text("Play")
 
 	// slider
 	let slide_width = 6000;
@@ -111,6 +121,7 @@ function vis_map(parentDOM, width, height, data) {
 	let moving = false;
 	let currVal = 0;
 	let targetVal = slide_width;
+	let timer;
 
 	let x_slide = d3.scaleTime()
 		.domain([startDate, endDate])
@@ -139,7 +150,6 @@ function vis_map(parentDOM, width, height, data) {
 			})
 		);
 
-	console.log(x_slide.ticks(10));
 	// the ticks
 	slider.insert("g", ".track-overlay")
 		.attr("class", "ticks")
@@ -177,16 +187,39 @@ function vis_map(parentDOM, width, height, data) {
 
 		// filter dataset and redraw plot
 		let newData = data.filter(function(d){
-			let year = formatDateIntoYear(d["date"])
-			let thisYear = formatDateIntoYear(h)
-			return (year == thisYear);
+			let year = formatDateIntoYear(d["date"]);
+			let thisYear = formatDateIntoYear(h);
+			let month = formatDateIntoMonth(d["date"]);
+			let thisMonth = formatDateIntoMonth(h);
+			return (year == thisYear && month == thisMonth);
 		}); // keep an eye on how to get the Year of d["Date"]
 		drawCircles(newData);
 	}
 
+	function step(){
+		update(x_slide.invert(currVal));
+		currVal = currVal + (targetVal / 200);
+		if (currVal > targetVal) {
+			drawCircles(data);
+			moving = false;
+			currVal = 0;
+			clearInterval(timer);
+			indicator.text("Play");
+		}
+	}
 
+
+	// Animation starts upon clicking play button
 	trigger.on("click", function(){
-
+		if (indicator.text() == "Pause") {
+			moving = false;
+			clearInterval(timer);
+			indicator.text("Play")
+		} else {
+			moving = true;
+			timer = setInterval(step, 100);
+			indicator.text("Pause");
+		}
 	});
 
 }
