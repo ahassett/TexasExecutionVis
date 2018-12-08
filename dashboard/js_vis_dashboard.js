@@ -202,13 +202,10 @@ function vis_dashboard(parentDOM, width, height, data) {
 					d3.selectAll(".rect_" + key).classed("deselected", false);
 					d3.selectAll(".brush").call(brush.move, null);
 				}
-			}); 
+			});
 
 			// brush container
 			let brush_g = sub_chart.append("g").classed("brush", true).call(brush);
-
-
-
 		});
 
 		j++;

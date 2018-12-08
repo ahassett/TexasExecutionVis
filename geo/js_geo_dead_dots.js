@@ -26,6 +26,7 @@ function vis_map(parentDOM, width, height, data) {
 			let newY = bbox.y + Math.floor(Math.random() * bbox.height);
 			return [newX, newY];
 		}
+		circle_g.html("");
 
 		dataset.forEach(function(d){
 			that = d3.select("#" + d["County"].replace(" ", "_")) ;
@@ -103,11 +104,6 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("height", 1000)
 		.attr("fill", "black");
 
-	// some time objects
-	let formatDateIntoYear = d3.timeFormat("%Y");
-	let formatDate = d3.timeFormat("%b %Y");
-	let parseDate = d3.timeParse("%m/%d/%y");
-
 	// slider
 	let slide_width = 6000;
 	let startDate = new Date("01/01/1982");
@@ -157,7 +153,7 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("text-anchor", "middle")
 		.style("font-size", "150px")
 		.text(function(d){return formatDateIntoYear(d); })
-		.style("font-size", 2000)
+		.style("font-size", 2000);
 
 	let handle = slider.insert("circle", ".track-overlay")
 		.attr("class", "handle")
@@ -180,17 +176,17 @@ function vis_map(parentDOM, width, height, data) {
 		 	.text(formatDate(h));
 
 		// filter dataset and redraw plot
-		let newData = data.filter((d) => d["Date"] == h); // keep an eye on how to get the Year of d["Date"]
-		drawPlot(newData);
+		let newData = data.filter(function(d){
+			let year = formatDateIntoYear(d["date"])
+			let thisYear = formatDateIntoYear(h)
+			return (year == thisYear);
+		}); // keep an eye on how to get the Year of d["Date"]
+		drawCircles(newData);
 	}
+
 
 	trigger.on("click", function(){
 
 	});
-
-
-
-
-
 
 }

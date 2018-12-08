@@ -9,10 +9,21 @@ const margin = {
 	bottom: 20
 }
 
+// some time objects
+let formatDateIntoYear = d3.timeFormat("%Y");
+let formatDate = d3.timeFormat("%b %Y");
+let parseDate = d3.timeParse("%m/%d/%Y");
+
+function prepare(d) {
+	d["date"] = parseDate(d["Date"]);
+	return d;
+}
+
 Promise.all([
-	d3.csv("_data/Execution.csv"),
+	d3.csv("_data/Execution.csv", prepare),
 	d3.svg("geo/Texas_map.html")
-]).then(function(data){
+]).then(function(DATA){
+	data = DATA;
 	console.log(data[0]);
 	console.log(data[1]);
 
