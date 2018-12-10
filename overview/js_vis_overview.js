@@ -180,22 +180,53 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("stroke-width", 5)
 		.style("stroke-dasharray", ("6, 5"));
 
-	// Annotation area
-	annotation = parentDOM.append("g")
-		.attr("id", "annotation")
-		.attr("transform", `translate(${width + 150}, ${margin.top})`);
+	/*---------------
+	* Freaking scroll
+	----------------*/
+	const scr1 = function(){
+		console.log("scr1")
+	}
 
-	annotation.append("rect")
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", 450)
-		.attr("height", height)
-		.attr("fill", "#92d1b6");
+	const scr2 = function(){
+		console.log("scr2")
+	}
 
-	text1 = "Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome";
+	const scr3 = function(){
+		console.log("scr3")
+	}
+	const scr4 = function(){
+		console.log("scr4")
+	}
+	const scr5 = function(){
+		console.log("scr5")
+	}
 
+	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5];
+/*
+	// What the hell is going on here?
+	const gs = d3.graphScroll()
+		.container(d3.select("#vis_container"))
+		.graph(d3.select("#vis_canvas"))
+		.eventId('sec1_id')
+		.sections(d3.selectAll("#step1_annotation section"))
+		.on("active", function(i){
+			console.log(i);
+			vis_scrolls[i]();
+		});
+*/
+
+	/*
+	* Try for annotation step1
+	*/
+
+	d3.selectAll(".step1_click").on("click", function(){
+		targetID = d3.select(this).attr("href");
+		d3.selectAll(".step1_section").classed("hidden", true);
+		d3.select(targetID).classed("hidden", false);
+	}); 
 
 
 	return function(){};
+
 
 }

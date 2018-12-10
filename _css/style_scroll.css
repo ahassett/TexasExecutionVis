@@ -1,0 +1,73 @@
+/* body{
+	max-width: 900px;
+	margin: 0px auto;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+} */
+
+h1{
+	margin: 50px;
+}
+
+h1{
+	text-align: center;
+}
+
+
+#vis_container{
+	position: relative;
+}
+
+#step1_annotation{
+	width: 340px;
+	padding-bottom:300px;
+	position: absolute;
+	top: 15px;
+	left: 800px;
+}
+
+#step1_annotation section{
+	/* opacity: .2; */
+	margin-bottom: 200px;
+}
+
+#step1_annotation section.graph-scroll-active{
+	opacity: 1;
+}
+
+#vis_canvas{
+	/* margin-left: 40px;
+	width: 500px; */
+	position: sticky;
+	top: 20px;
+	float: right;
+
+}
+
+#footer{
+	height:1000px;
+}
+
+#tooltip{
+	position:absolute;
+	width:150px;
+	height:auto;
+	padding:10px;
+	background-color: white;
+	border-radius:10px;
+	box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+	pointer-events: none;
+}
+
+#tooltip.hidden{
+	display:none;
+}
+
+#tooltip p{
+	margin:0;
+	font-family: sans-serif;
+	font-size:12px;
+}
+
+#vis_canvas svg{
+	border:solid 1px lightgrey;
+}
