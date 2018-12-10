@@ -1,3 +1,5 @@
+// http://www.txexecutions.org/history.asp
+
 function vis_overview(parentDOM, width, height, data) {
 
 	parentDOM.html("");
@@ -56,7 +58,7 @@ function vis_overview(parentDOM, width, height, data) {
 
 
 	nestedData.each(function(val, key) {
-		if (key == "Other") return; 
+		if (key == "Other") return;
 
 		let histogram = d3.histogram()
 			.value((d) => {
@@ -136,6 +138,63 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("x", 35)
 		.attr("y", (d, i) => i * 30 + 5)
 		.text((d) => d);
+
+	// Creating grid lines
+	function make_h_gridlines() {
+		return d3.axisBottom(x_scale).ticks(5);
+	}
+
+	function make_v_gridlines() {
+		return d3.axisLeft(y_scale).ticks(5);
+	}
+	/*
+	// add horizontal grid lines
+	parentDOM.append("g")
+		.attr("class", "grid")
+		.attr("transform", `translate(${margin.left}, ${margin.top + height})`)
+		.call(make_h_gridlines()
+			.tickSize(-height)
+			.tickFormat("")
+		);
+
+	// add vertical grid lines
+	parentDOM.append("g")
+		.attr("class", "grid")
+		.attr("transform", `translate(${margin.left}, ${margin.top})`)
+		.call(make_v_gridlines()
+			.tickSize(-width)
+			.tickFormat("")
+		);
+	*/
+	const mark_lines = parentDOM.append("g")
+		.attr("id", "mark_lines")
+		.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+	// 2005
+	mark_lines.append("line")
+		.attr("y1", 0)
+		.attr("y2", height)
+		.attr("x1", x_scale(2005))
+		.attr("x2", x_scale(2005))
+		.attr("stroke", "black")
+		.attr("stroke-width", 5)
+		.style("stroke-dasharray", ("6, 5"));
+
+	// Annotation area
+	annotation = parentDOM.append("g")
+		.attr("id", "annotation")
+		.attr("transform", `translate(${width + 150}, ${margin.top})`);
+
+	annotation.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 450)
+		.attr("height", height)
+		.attr("fill", "#92d1b6");
+
+	text1 = "Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome Welcome to the history of execution of Texas. In fact, none yall ain't welcome";
+
+
 
 	return function(){};
 

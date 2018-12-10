@@ -11,7 +11,7 @@ const margin = {
 
 // some time objects
 let formatDateIntoYear = d3.timeFormat("%Y");
-let formatDateIntoMonth = d3.timeFormat("%m"); 
+let formatDateIntoMonth = d3.timeFormat("%m");
 let formatDate = d3.timeFormat("%b %Y");
 let parseDate = d3.timeParse("%m/%d/%Y");
 
@@ -31,7 +31,7 @@ Promise.all([
 	const vis_funcs = {
 		"step1": {
 			"f": vis_overview,
-			"width": 400,
+			"width": 600,
 			"height": 400,
 			"DOMs": [
 				$('<svg id="vis_area"></svg>')
