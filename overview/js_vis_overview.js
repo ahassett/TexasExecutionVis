@@ -166,29 +166,72 @@ function vis_overview(parentDOM, width, height, data) {
 			.tickFormat("")
 		);
 	*/
-	const mark_lines = parentDOM.append("g")
-		.attr("id", "mark_lines")
-		.attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-	// 2005
-	mark_lines.append("line")
-		.attr("y1", 0)
-		.attr("y2", height)
-		.attr("x1", x_scale(2005))
-		.attr("x2", x_scale(2005))
-		.attr("stroke", "black")
-		.attr("stroke-width", 5)
-		.style("stroke-dasharray", ("6, 5"));
 
 	/*---------------
 	* Freaking scroll
 	----------------*/
+	const aux = parentDOM.append("g")
+		.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+	yearArray = [1983, 1992, 1995, 1999, 1998, 2000, 2005, 2018]
+
+	// construct all lines
+	for (let i = 0; i < yearArray.length; i++){
+		aux.append("line")
+			.attr("y1", 0)
+			.attr("y2", height)
+			.attr("x1", x_scale(yearArray[i]))
+			.attr("x2", x_scale(yearArray[i]))
+			.attr("stroke", "black")
+			.attr("stroke-width", 5)
+			.classed("boundary_line", true)
+			.classed("opaque", true)
+			.attr("id", "line_" + yearArray[i])
+			.style("stroke-dasharray", ("6, 5"));
+	}
+
+	aux.append("rect")
+		.attr("x", x_scale(1983))
+		.attr("y", 0)
+		.attr("width", x_scale(1992) - x_scale(1983))
+		.attr("height", height)
+		.attr("fill", "#FF3F00")
+		.attr("opacity", 0.2)
+		.attr("id", "rect1")
+
 	const scr1 = function(){
 		console.log("scr1")
+
+		aux.select("#line_1983")
+			.classed("opaque", false)
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(1983))
+			.attr("y", 0)
+			.attr("width", x_scale(1992) - x_scale(1983))
+			.attr("height", height)
+			.duration(500);
 	}
 
 	const scr2 = function(){
 		console.log("scr2")
+
+		// set all lines opaque again
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
+		aux.select("#line_1995")
+			.classed("opaque", false)
+			.attr("fill", "#A59006")
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(1992))
+			.attr("y", 0)
+			.attr("width", x_scale(1999) - x_scale(1992))
+			.attr("height", height)
+			.duration(500);
 	}
 
 	const scr3 = function(){
@@ -200,8 +243,14 @@ function vis_overview(parentDOM, width, height, data) {
 	const scr5 = function(){
 		console.log("scr5")
 	}
+	const scr6 = function(){
+		console.log("scr6")
+	}
+	const scr7 = function(){
+		console.log("scr7")
+	}
 
-	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5];
+	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5, scr6, scr7];
 /*
 	// What the hell is going on here?
 	const gs = d3.graphScroll()
@@ -218,12 +267,16 @@ function vis_overview(parentDOM, width, height, data) {
 	/*
 	* Try for annotation step1
 	*/
+	scr1();
 
 	d3.selectAll(".step1_click").on("click", function(){
 		targetID = d3.select(this).attr("href");
 		d3.selectAll(".step1_section").classed("hidden", true);
 		d3.select(targetID).classed("hidden", false);
-	}); 
+
+		let index = +targetID.slice(4)
+		vis_scrolls[index - 1]();
+	});
 
 
 	return function(){};

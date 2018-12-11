@@ -58,3 +58,7 @@ ul {
   stroke-opacity: 0.5;
   stroke-width: 1.25px;
 }
+
+.opaque {
+	opacity: 0.2;
+}
