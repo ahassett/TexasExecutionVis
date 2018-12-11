@@ -60,5 +60,9 @@ ul {
 }
 
 .opaque {
-	opacity: 0.2;
+	opacity: 0;
+}
+
+.highlight_year {
+	background-color: yellow;
 }

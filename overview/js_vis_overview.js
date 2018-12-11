@@ -44,7 +44,7 @@ function vis_overview(parentDOM, width, height, data) {
 
 	let y_scale = d3.scaleLinear()
 		.range([height, 0])
-		.domain([0, 70]); // Needs better solution!!!!!
+		.domain([0, 22]); // Needs better solution!!!!!
 
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 		.domain(["Hispanic", "Black", "White", "Other"]);
@@ -66,7 +66,7 @@ function vis_overview(parentDOM, width, height, data) {
 				return t.year;
 			})
 			.domain(x_scale.domain())
-			// .thresholds(x_scale.ticks(30)) // bin number
+			.thresholds(x_scale.ticks(30)) // bin number
 
 		let bins = histogram(val);
 
@@ -77,7 +77,7 @@ function vis_overview(parentDOM, width, height, data) {
 			.y(function(d){
 				return y_scale(d.length);
 			})
-			.curve(d3.curveMonotoneX)
+			//.curve(d3.curveMonotoneX)
 
 		chart.append("path")
 			.datum(bins)
@@ -88,17 +88,17 @@ function vis_overview(parentDOM, width, height, data) {
 			.attr("stroke-linejoin", "round")
 			.attr("stroke-linecap", "round");
 
-		x_scale.range([0, width]) // adjust x scale
-          .domain([d3.min(data, function(d){
-			  let t = new Time(d["Date"]);
-			  return t.year;
-		  }), d3.max(data, function(d){
-			  let t = new Time(d["Date"]);
-			  return t.year;
-		  })]);
-
-        y_scale.range([height, 0]) // adjust y scale
-          .domain([0, 70]); // adjust to scale to max
+		// x_scale.range([0, width]) // adjust x scale
+        //   .domain([d3.min(data, function(d){
+		// 	  let t = new Time(d["Date"]);
+		// 	  return t.year;
+		//   }), d3.max(data, function(d){
+		// 	  let t = new Time(d["Date"]);
+		// 	  return t.year;
+		//   })]);
+		//
+        // y_scale.range([height, 0]) // adjust y scale
+        //   .domain([0, 70]); // adjust to scale to max
 
         x_axis.attr("transform", `translate(0, ${height})`) // adjust x axis with new x scale
           .call(d3.axisBottom(x_scale))
@@ -173,12 +173,12 @@ function vis_overview(parentDOM, width, height, data) {
 	const aux = parentDOM.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-	yearArray = [1983, 1992, 1995, 1999, 1998, 2000, 2005, 2018]
+	yearArray = [1983, 1992, 1995, 1999, 1998, 2000, 2005, 2011]
 
 	// construct all lines
 	for (let i = 0; i < yearArray.length; i++){
 		aux.append("line")
-			.attr("y1", 0)
+			.attr("y1", 30)
 			.attr("y2", height)
 			.attr("x1", x_scale(yearArray[i]))
 			.attr("x2", x_scale(yearArray[i]))
@@ -188,6 +188,17 @@ function vis_overview(parentDOM, width, height, data) {
 			.classed("opaque", true)
 			.attr("id", "line_" + yearArray[i])
 			.style("stroke-dasharray", ("6, 5"));
+
+		aux.append("text")
+			.attr("text-anchor", "center")
+			.attr("x", x_scale(yearArray[i]))
+			.attr("y", 25)
+			.attr("fill", "black")
+			.style("font-size", "15px")
+			.classed("opaque", true)
+			.classed("highlight_year", true)
+			.attr("id", "text_" + yearArray[i])
+			.text(yearArray[i]);
 	}
 
 	aux.append("rect")
@@ -195,14 +206,21 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("y", 0)
 		.attr("width", x_scale(1992) - x_scale(1983))
 		.attr("height", height)
-		.attr("fill", "#FF3F00")
+		.attr("fill", "#3D405B")
 		.attr("opacity", 0.2)
 		.attr("id", "rect1")
 
 	const scr1 = function(){
 		console.log("scr1")
 
+		// set all lines opaque again
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
 		aux.select("#line_1983")
+			.classed("opaque", false)
+
+		aux.select("#text_1983")
 			.classed("opaque", false)
 
 		aux.select("#rect1")
@@ -216,14 +234,12 @@ function vis_overview(parentDOM, width, height, data) {
 
 	const scr2 = function(){
 		console.log("scr2")
-
 		// set all lines opaque again
 		aux.selectAll(".boundary_line")
 			.classed("opaque", true)
 
-		aux.select("#line_1995")
+		aux.select('#line_1992')
 			.classed("opaque", false)
-			.attr("fill", "#A59006")
 
 		aux.select("#rect1")
 			.transition()
@@ -236,21 +252,76 @@ function vis_overview(parentDOM, width, height, data) {
 
 	const scr3 = function(){
 		console.log("scr3")
+
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
+		aux.select('#line_1998')
+			.classed("opaque", false)
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(1992))
+			.attr("y", 0)
+			.attr("width", x_scale(1999) - x_scale(1992))
+			.attr("height", height)
+			.duration(500);
 	}
 	const scr4 = function(){
 		console.log("scr4")
+
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
+		aux.select("#line_2000")
+			.classed("opaque", false)
+			.attr("fill", "#A59006")
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(2000))
+			.attr("y", 0)
+			.attr("width", x_scale(2005) - x_scale(2000))
+			.attr("height", height)
+			.duration(500);
 	}
 	const scr5 = function(){
 		console.log("scr5")
+
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
+		aux.select('#line_2005')
+			.classed("opaque", false)
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(2000))
+			.attr("y", 0)
+			.attr("width", x_scale(2005) - x_scale(2000))
+			.attr("height", height)
+			.duration(500);
 	}
 	const scr6 = function(){
 		console.log("scr6")
-	}
-	const scr7 = function(){
-		console.log("scr7")
+
+		aux.selectAll(".boundary_line")
+			.classed("opaque", true)
+
+		aux.select("#line_2011")
+			.classed("opaque", false)
+			.attr("fill", "#A59006")
+
+		aux.select("#rect1")
+			.transition()
+			.attr("x",  x_scale(2005))
+			.attr("y", 0)
+			.attr("width", x_scale(2018) - x_scale(2005))
+			.attr("height", height)
+			.duration(500);
 	}
 
-	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5, scr6, scr7];
+	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5, scr6];
 /*
 	// What the hell is going on here?
 	const gs = d3.graphScroll()
@@ -277,6 +348,15 @@ function vis_overview(parentDOM, width, height, data) {
 		let index = +targetID.slice(4)
 		vis_scrolls[index - 1]();
 	});
+
+	// highlight appropriate lines
+	d3.selectAll(".highlight_year").on("mouseover", function(){
+		d3.select("#line_" + d3.select(this).html()).attr("stroke", "#eaf200");
+	})
+
+	d3.selectAll(".highlight_year").on("mouseout", function(){
+		d3.select("#line_" + d3.select(this).html()).attr("stroke", "black");
+	})
 
 
 	return function(){};
