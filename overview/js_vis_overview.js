@@ -14,7 +14,7 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 	const legend = chart.append("g")
-		.attr("transform", `translate(${width - 50}, ${margin.top})`);
+		.attr("transform", `translate(${width}, ${margin.top})`);
 
 	const legend_line = legend.append("g")
 		.attr("transform", `translate(0, ${margin.top})`);
@@ -47,7 +47,7 @@ function vis_overview(parentDOM, width, height, data) {
 		.domain([0, 22]); // Needs better solution!!!!!
 
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
-		.domain(["Hispanic", "Black", "White", "Other"]);
+		.domain(["Hispanic", "Black", "White"]);
 
 	let x_axis = chart.append("g");
 	let y_axis = chart.append("g");
@@ -116,12 +116,12 @@ function vis_overview(parentDOM, width, height, data) {
 			.attr("text-anchor", "middle")
 			.attr("transform",  `translate(${-(3*margin.left/4)}, ${height/2})rotate(-90)`)
 			.style("font-size", "10px")
-			.text("Count");
+			.text("Execution Count");
 	})
 
 	// create legend
 	legend_line.selectAll("rect")
-		.data(["White", "Black", "Hispanic", "Other"])
+		.data(["White", "Black", "Hispanic"])
 		.enter()
 		.append("rect")
 		.attr("fill", (d) => color_scale(d))
@@ -131,7 +131,7 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("height", 3);
 
 	legend_text.selectAll("text")
-		.data(["White", "Black", "Hispanic", "Other"])
+		.data(["White", "Black", "Hispanic"])
 		.enter()
 		.append("text")
 		.attr("x", 35)
@@ -218,6 +218,14 @@ function vis_overview(parentDOM, width, height, data) {
 
 		aux.select("#line_1983")
 			.classed("opaque", false)
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+
+		aux.selectAll(".highlight_year")
+			.classed("opaque", true)
 
 		aux.select("#text_1983")
 			.classed("opaque", false)
@@ -237,8 +245,16 @@ function vis_overview(parentDOM, width, height, data) {
 		aux.selectAll(".boundary_line")
 			.classed("opaque", true)
 
+		aux.selectAll(".highlight_year").classed("opaque", true)
+
 		aux.select('#line_1992')
 			.classed("opaque", false)
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+		aux.selectAll("#text_1992").classed("opaque", false)
 
 		aux.select("#rect1")
 			.transition()
@@ -257,6 +273,16 @@ function vis_overview(parentDOM, width, height, data) {
 
 		aux.select('#line_1998')
 			.classed("opaque", false)
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+		aux.selectAll(".highlight_year")
+			.classed("opaque", true)
+
+		aux.select("#text_1998")
+			.classed("opaque", false)
 
 		aux.select("#rect1")
 			.transition()
@@ -274,7 +300,16 @@ function vis_overview(parentDOM, width, height, data) {
 
 		aux.select("#line_2000")
 			.classed("opaque", false)
-			.attr("fill", "#A59006")
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+		aux.selectAll(".highlight_year")
+			.classed("opaque", true)
+
+		aux.select("#text_2000")
+			.classed("opaque", false)
 
 		aux.select("#rect1")
 			.transition()
@@ -291,6 +326,16 @@ function vis_overview(parentDOM, width, height, data) {
 			.classed("opaque", true)
 
 		aux.select('#line_2005')
+			.classed("opaque", false)
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+		aux.selectAll(".highlight_year")
+			.classed("opaque", true)
+
+		aux.select("#text_2005")
 			.classed("opaque", false)
 
 		aux.select("#rect1")
@@ -309,7 +354,16 @@ function vis_overview(parentDOM, width, height, data) {
 
 		aux.select("#line_2011")
 			.classed("opaque", false)
-			.attr("fill", "#A59006")
+			.attr("opacity", 0)
+			.transition()
+			.attr("opacity", 1)
+			.duration(500)
+
+		aux.selectAll(".highlight_year")
+			.classed("opaque", true)
+
+		aux.select("#text_2011")
+			.classed("opaque", false)
 
 		aux.select("#rect1")
 			.transition()
@@ -347,15 +401,6 @@ function vis_overview(parentDOM, width, height, data) {
 		let index = +targetID.slice(4)
 		vis_scrolls[index - 1]();
 	});
-
-	// highlight appropriate lines
-	d3.selectAll(".highlight_year").on("mouseover", function(){
-		d3.select("#line_" + d3.select(this).html()).attr("stroke", "#eaf200");
-	})
-
-	d3.selectAll(".highlight_year").on("mouseout", function(){
-		d3.select("#line_" + d3.select(this).html()).attr("stroke", "black");
-	})
 
 
 	return function(){};
