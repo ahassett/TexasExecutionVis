@@ -195,7 +195,7 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("text-anchor", "middle")
 		.style("font-size", "150px")
 		.text(function(d){return formatDateIntoYear(d); })
-		.style("font-size", 2000);
+		.style("font-size", "200px");
 
 	let handle = slider.insert("circle", ".track-overlay")
 		.attr("class", "handle")
@@ -206,7 +206,7 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("text-anchor", "middle")
 		.attr("x", 0)
 		.attr("y", -170)
-		.style("font-size", "150px")
+		.style("font-size", "200px")
 		.text(formatDateIntoYear(startDate))
 		// .attr("transfrom", "translate(500, 0)");
 
