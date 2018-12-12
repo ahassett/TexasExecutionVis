@@ -100,6 +100,9 @@ function vis_map(parentDOM, width, height, data) {
 	const trigger = parentDOM.append("g")
 		.attr("transform", "translate(8000, 500)");
 
+	const detrigger = parentDOM.append("g")
+		.attr("transform", "translate(8000, 700)");
+
 	trigger.append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
@@ -107,12 +110,26 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("height", 1000)
 		.attr("fill", "black");
 
+	detrigger.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 1000)
+		.attr("fill", "orange");
+
 	let indicator = trigger.append('text')
 		.style("font-size", "350px")
 		.attr("fill", "white")
 		.attr("x", 150)
 		.attr("y", 250)
 		.text("Play")
+
+	detrigger.append("text")
+		.style("font-size", "350px")
+		.attr("fill", "white")
+		.attr("x", 150)
+		.attr("y", 250)
+		.text("Stop");
 
 	// slider
 	let slide_width = 6000;
@@ -272,6 +289,24 @@ function vis_map(parentDOM, width, height, data) {
 			indicator.text("Pause");
 			d3.selectAll(".texas_text").classed("hidden", true);
 		}
+	});
+
+	detrigger.on("click", function(){
+		d3.selectAll(".texas_text").classed("hidden", true);
+		d3.select("#tec0").classed("hidden", false);
+
+		drawCircles(data);
+		moving = false;
+		currVal = 0;
+		clearInterval(timer);
+		indicator.text("Play");
+
+
+
+		handle.attr("cx", x_slide(startDate));
+
+		label.attr("x", x_slide(startDate))
+		 	.text(formatDateIntoYear(startDate));
 	});
 
 
