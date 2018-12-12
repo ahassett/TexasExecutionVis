@@ -226,7 +226,7 @@ function vis_map(parentDOM, width, height, data) {
 	/*
 	* Update the visualization: slider and circles
 	* that = current dateTime (e.g. Jan 2005)
-	* that = previous dateTime (e.g. Dec 2004)
+	* thee = previous dateTime (e.g. Dec 2004)
 	* Slider is always updated
 	* Circles are only updated when we switch from one year to another
 	*/
@@ -351,7 +351,7 @@ function vis_map(parentDOM, width, height, data) {
 		clearInterval(timer);
 		indicator.text("Play");
 
-		// reset label and handle to the left 
+		// reset label and handle to the left
 		handle.attr("cx", x_slide(startDate));
 
 		label.attr("x", x_slide(startDate))
