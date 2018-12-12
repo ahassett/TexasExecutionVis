@@ -42,16 +42,28 @@
 }
 
 /* Basic styling for the step links */
-a.step_link {
-  padding: 5px;
+a.step_link, .step1_click {
+  padding: 10px 15px;
   background-color: #444;
   color: #666;
   text-decoration: none;
 }
 
-a.step_link:hover, a.active {
+a.step_link:hover, .step1_click:hover, a.active {
   color: #ddd;
 }
+
+.step1_click {
+	padding: 2px 15px;
+	background-color: #555;
+	color: #999;
+	text-decoration: none;
+}
+
+.step1_click:hover, a.active {
+  	color: #ddd;
+}
+
 
 /* Finally we can position each annotation exactly how
  * we want. */

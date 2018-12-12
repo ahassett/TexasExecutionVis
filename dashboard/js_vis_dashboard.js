@@ -9,7 +9,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 	parentDOM.html("");
 
-	const margin = {top: 10, right: 30, left: 40, bottom: 20}
+	const margin = {top: 25, right: 30, left: 40, bottom: 20}
 
 	const chart = parentDOM.append("g")
 		.attr("id", "dashboard")
@@ -118,9 +118,9 @@ function vis_dashboard(parentDOM, width, height, data) {
 			circles = circles.merge(newCircles);
 
 			x_axis.attr("transform", `translate(0, ${height})`) // adjust x axis with new x scale
-			  .call(d3.axisBottom(x_scale))
+			  .call(d3.axisBottom(x_scale).ticks(5))
 
-			y_axis.call(d3.axisLeft(y_scale)); // adjust y axis with new y scale
+			y_axis.call(d3.axisLeft(y_scale).ticks(5)); // adjust y axis with new y scale
 
 			// axis labels
 			axis_labels.append("text")
@@ -134,7 +134,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 			  .attr("text-anchor", "middle")
 			  .attr("transform",  `translate(${-(3*margin.left/4)}, ${height/2})rotate(-90)`)
 			  .style("font-size", "10px")
-			  .text("Count");
+			  .text("Execution Count");
 
 			// horizontal brush
 			let brush = d3.brushX().extent([[0,0], [sub_width, height]]);

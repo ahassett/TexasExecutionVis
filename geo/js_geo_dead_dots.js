@@ -121,7 +121,7 @@ function vis_map(parentDOM, width, height, data) {
 	trigger.append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
-		.attr("width", 1000)
+		.attr("width", 1200)
 		.attr("height", 1000)
 		.attr("fill", "black");
 
