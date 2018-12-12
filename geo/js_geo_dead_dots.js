@@ -26,7 +26,15 @@ function vis_map(parentDOM, width, height, data) {
 			let newY = bbox.y + Math.floor(Math.random() * bbox.height);
 			return [newX, newY];
 		}
-		circle_g.html("");
+
+		circle_g.selectAll("circle")
+			.transition()
+			.attr("r", 10)
+			.attr("opacity", 0)
+			.duration(500)
+			.remove();
+
+		// circle_g.html("");
 
 		dataset.forEach(function(d){
 			that = d3.select("#" + d["County"].replace(" ", "_")) ;
@@ -34,9 +42,16 @@ function vis_map(parentDOM, width, height, data) {
 			circle_g.append("circle")
 				.attr("cx", getBoundingBoxCenter(that)[0])
 				.attr("cy", getBoundingBoxCenter(that)[1])
-				.attr("r", 40)
+				.classed("dot_" + d["Race"], true)
 				.attr("fill", color_scale(d["Race"]))
-				.classed("dot_" + d["Race"], true);
+				.attr("r", 10)
+				.attr("opacity", 0)
+				.transition()
+				.attr("r", 50)
+				.attr("opacity", 1)
+				.duration(600)
+
+
 
 		});
 	}
