@@ -44,9 +44,14 @@ function vis_dashboard(parentDOM, width, height, data) {
 		}
 	};
 
+	/* -----------
+	* Append histograms on each row
+	------------*/
 	let j = 0;
 	function appendHistogram(param){
 
+		// With this line, a new attribute in ROWS object is created
+		// This object is the g-container of this row
 		ROWS[param] = chart.append("g")
 			.attr("id", "dashboard_" + param)
 			.attr("transform", `translate(${margin.left}, ${(j + 1) * margin.top + j * height})`);
@@ -65,6 +70,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 		let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 			.domain(["Hispanic", "Black", "White"]);
 
+		// nested by race
 		nestedData = d3.nest()
 			.key((d) => d["Race"])
 			.map(data);
@@ -72,8 +78,9 @@ function vis_dashboard(parentDOM, width, height, data) {
 		var i = -1;
 		nestedData.each(function(val, key) {
 			if (key == "Other") return;
-
 			i++;
+
+			// histogram: binning by the relevant parameter, called param
 			let histogram = d3.histogram()
 				.value((d) => d[param])
 				.domain(x_scale.domain())
@@ -81,6 +88,8 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 			let bins = histogram(val);
 
+			// each individual chart
+			// each row has 3 subcharts, corresponding to three races
 			let sub_chart = ROWS[param].append("g")
 				.attr("transform", `translate(${width * i / 3}, ${0})`)
 				.attr("id", param + "_" + key);
@@ -90,6 +99,8 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 			const axis_labels = sub_chart.append("g");
 
+			// g-container for each column
+			// later append a column of circles in this g
 			let cols = sub_chart.selectAll(".col")
 				.data(bins);
 
@@ -102,6 +113,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 
 			cols = cols.merge(newCols);
 
+			// Now, append circles in each column
 			let circles = cols.selectAll("circle")
 				.data((d) => d);
 
@@ -136,20 +148,28 @@ function vis_dashboard(parentDOM, width, height, data) {
 			  .style("font-size", "10px")
 			  .text("Execution Count");
 
+
+			/* ---------------
+			* Smart Brush !!!!!
+			---------------*/
+
 			// horizontal brush
 			let brush = d3.brushX().extent([[0,0], [sub_width, height]]);
 
-			/* ----------
-			Freaking brush
-			------------*/
 			brush.on("brush", function(){
 				let extent = d3.event.selection;
 
-				// synchronizing all brushes to brush
+				// synchronizing all brushes in the same row to brush
 				if (d3.event.sourceEvent.type == "mousemove"){
 					ROWS[param].selectAll(".brush").call(brush.move, extent);
 				}
 
+				/* Explanation of terms:
+				* highlighted: The brush "highlights" a range in this row
+				* delighted: the highlighted range is de-highlighted
+				* selected: The corresponding circles that are not in this row, but corrsponding highlighted circles in this row, are selected
+				* deselected: ....
+				*/
 				if(extent != null){
 					let x_extent = [extent[0], extent[1]].map(x_scale.invert);
 
@@ -160,10 +180,8 @@ function vis_dashboard(parentDOM, width, height, data) {
 					ROWS[param].selectAll(".col").classed("highlighted", function(d){
 				  		return (d.x0 >= d3.min(x_extent) && d.x1 <= d3.max(x_extent))
 					});
-
-
-
 				} else {
+					// When not brushing, removing all the relevant classes
 					parentDOM.selectAll(".col").classed("delighted", false);
 					parentDOM.selectAll(".col").classed("highlighted", false);
 					parentDOM.selectAll(".col").classed("selected", false);
@@ -181,8 +199,8 @@ function vis_dashboard(parentDOM, width, height, data) {
 					sub_chart.selectAll(".rect_" + key).classed("deselected", false);
 				} else {
 					if (d3.event.sourceEvent.type === "mouseup") {
-						console.log(d3.event)
-						// select across column
+						// For delighted circles (the circles that are not brushed)
+						// deselect the corresponding circles in other rows
 						d3.selectAll(".delighted").selectAll("circle").each(function(){
 
 							let classList = d3.select(this).attr("class").split(" ");
@@ -200,7 +218,7 @@ function vis_dashboard(parentDOM, width, height, data) {
 			brush.on("start", function(d){
 				if (d3.event.sourceEvent.type === "mousedown"){
 					d3.selectAll(".rect_" + key).classed("deselected", false);
-					d3.selectAll(".brush").call(brush.move, null);
+					d3.selectAll(".brush").call(brush.move, null); // When start a new brush, remove all the previous
 				}
 			});
 
@@ -211,13 +229,10 @@ function vis_dashboard(parentDOM, width, height, data) {
 		j++;
 	}
 
-
+	// call appendHistogram function for each parameter 
 	appendHistogram("Age");
 	appendHistogram("Year");
 	appendHistogram("Birth_Year");
-
-
-
 
 	return function(){};
 }
