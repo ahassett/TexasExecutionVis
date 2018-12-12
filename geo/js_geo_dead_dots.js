@@ -178,32 +178,37 @@ function vis_map(parentDOM, width, height, data) {
 		.text(formatDateIntoYear(startDate))
 		// .attr("transfrom", "translate(500, 0)");
 
-	function update(h) {
+	function update(that, thee) {
 		// update position and text of label according to slider scale
-		handle.attr("cx", x_slide(h));
+		handle.attr("cx", x_slide(that));
 
-		label.attr("x", x_slide(h))
-		 	.text(formatDateIntoYear(h));
+		label.attr("x", x_slide(that))
+		 	.text(formatDateIntoYear(that));
 
 		// filter dataset and redraw plot
 		let newData = data.filter(function(d){
 			let year = formatDateIntoYear(d["date"]);
-			let thisYear = formatDateIntoYear(h);
+			let thisYear = formatDateIntoYear(that);
 			let month = formatDateIntoMonth(d["date"]);
-			let thisMonth = formatDateIntoMonth(h);
+			let thisMonth = formatDateIntoMonth(that);
 			return (year == thisYear);
 		}); // keep an eye on how to get the Year of d["Date"]
-		drawCircles(newData);
+
+		let thatYear = formatDateIntoYear(that);
+		let theeYear = formatDateIntoYear(thee);
+		if (thatYear != theeYear)
+			drawCircles(newData);
 	}
 
 	function step(){
 		currVal = currVal + (targetVal / 200);
-		update(x_slide.invert(currVal));
 
 		let that = x_slide.invert(currVal);
 		let thee = x_slide.invert(currVal - targetVal / 200)
-		let thatYear = formatDateIntoYear(x_slide.invert(currVal));
-		let theeYear = formatDateIntoYear(x_slide.invert(currVal - targetVal / 200))
+		let thatYear = formatDateIntoYear(that);
+		let theeYear = formatDateIntoYear(thee);
+
+		update(that, thee);
 		// tec 1
 		if (thatYear >= 1983 && theeYear < 1983){
 			d3.selectAll(".texas_text")
@@ -247,7 +252,10 @@ function vis_map(parentDOM, width, height, data) {
 			clearInterval(timer);
 			indicator.text("Play");
 
-			
+			d3.selectAll(".texas_text")
+				.classed("hidden", true)
+			d3.select("#tec4")
+				.classed("hidden", false)
 		}
 	}
 
