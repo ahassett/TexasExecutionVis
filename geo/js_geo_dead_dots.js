@@ -8,7 +8,7 @@ function vis_map(parentDOM, width, height, data) {
 
 	let circle_g = parentDOM.append("g");
 	let legend_g = parentDOM.append("g")
-		.attr("transform", `translate(${10000}, ${500})`);
+		.attr("transform", `translate(${10000}, ${-250})`);
 
 	let color_scale = d3.scaleOrdinal(d3.schemeCategory10)
 		.domain(["Hispanic", "Black", "White"]);
@@ -49,10 +49,7 @@ function vis_map(parentDOM, width, height, data) {
 				.transition()
 				.attr("r", 50)
 				.attr("opacity", 1)
-				.duration(600)
-
-
-
+				.duration(600);
 		});
 	}
 
@@ -75,18 +72,19 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("stroke-width", 50)
     	.attr("stroke", (d) => color_scale(d))
     	.attr("fill", (d)=> color_scale(d)) // initial circles are not filled
-		.classed("selected", true);
+		.classed("selected", true)
+		.classed("handpointer", true);
 
 	legend_circles = legend_circles.merge(new_circles);
 
 	legend_g.selectAll("text")
-	.data(["White", "Hispanic", "Black"])
-	.enter()
-	.append("text")
-	.attr("x", 250)
-	.attr("y", (d, i) => 100 + i * 500)
-	.style("font-size", 300)
-	.text((d)=> d)
+		.data(["White", "Hispanic", "Black"])
+		.enter()
+		.append("text")
+		.attr("x", 250)
+		.attr("y", (d, i) => 100 + i * 500)
+		.style("font-size", "300px")
+		.text((d)=> d)
 
 	// event handler for legend
 	legend_circles.on("click", function(d){
@@ -113,10 +111,12 @@ function vis_map(parentDOM, width, height, data) {
 	* Freaking animation
 	*/
 	const trigger = parentDOM.append("g")
-		.attr("transform", "translate(8000, 500)");
+		.attr("transform", "translate(7000, -250)")
+		.classed("handpointer", true);
 
 	const detrigger = parentDOM.append("g")
-		.attr("transform", "translate(8000, 700)");
+		.attr("transform", "translate(8500, -250)")
+		.classed("handpointer", true);
 
 	trigger.append("rect")
 		.attr("x", 0)
@@ -135,15 +135,15 @@ function vis_map(parentDOM, width, height, data) {
 	let indicator = trigger.append('text')
 		.style("font-size", "350px")
 		.attr("fill", "white")
-		.attr("x", 150)
-		.attr("y", 250)
+		.attr("x", 200)
+		.attr("y", 600)
 		.text("Play")
 
 	detrigger.append("text")
 		.style("font-size", "350px")
 		.attr("fill", "white")
-		.attr("x", 150)
-		.attr("y", 250)
+		.attr("x", 200)
+		.attr("y", 600)
 		.text("Stop");
 
 	// slider
@@ -163,7 +163,7 @@ function vis_map(parentDOM, width, height, data) {
 	// components of sliders
 	let slider = parentDOM.append("g")
 		.attr("class", "slider")
-		.attr("transform", "translate(500, 500)");
+		.attr("transform", "translate(500, -300)");
 
 	// the main slide
 	slider.append("line")

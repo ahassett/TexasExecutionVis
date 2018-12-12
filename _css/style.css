@@ -66,3 +66,7 @@ ul {
 .highlight_year {
 	background-color: yellow;
 }
+
+.handpointer:hover {
+	cursor:pointer;
+}
