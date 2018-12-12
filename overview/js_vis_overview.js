@@ -52,6 +52,7 @@ function vis_overview(parentDOM, width, height, data) {
 	let x_axis = chart.append("g");
 	let y_axis = chart.append("g");
 
+	// nest data by race
 	nestedData = d3.nest()
 		.key((d) => d["Race"])
 		.map(data);
@@ -59,6 +60,7 @@ function vis_overview(parentDOM, width, height, data) {
 	nestedData.each(function(val, key) {
 		if (key == "Other") return;
 
+		// histogram: binning by year
 		let histogram = d3.histogram()
 			.value((d) => {
 				let t = new Time(d["Date"]);
@@ -86,18 +88,6 @@ function vis_overview(parentDOM, width, height, data) {
 			.attr("stroke-width", 4)
 			.attr("stroke-linejoin", "round")
 			.attr("stroke-linecap", "round");
-
-		// x_scale.range([0, width]) // adjust x scale
-        //   .domain([d3.min(data, function(d){
-		// 	  let t = new Time(d["Date"]);
-		// 	  return t.year;
-		//   }), d3.max(data, function(d){
-		// 	  let t = new Time(d["Date"]);
-		// 	  return t.year;
-		//   })]);
-		//
-        // y_scale.range([height, 0]) // adjust y scale
-        //   .domain([0, 70]); // adjust to scale to max
 
         x_axis.attr("transform", `translate(0, ${height})`) // adjust x axis with new x scale
           .call(d3.axisBottom(x_scale))
@@ -138,43 +128,21 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("y", (d, i) => i * 30 + 5)
 		.text((d) => d);
 
-	// Creating grid lines
-	function make_h_gridlines() {
-		return d3.axisBottom(x_scale).ticks(5);
-	}
-
-	function make_v_gridlines() {
-		return d3.axisLeft(y_scale).ticks(5);
-	}
-	/*
-	// add horizontal grid lines
-	parentDOM.append("g")
-		.attr("class", "grid")
-		.attr("transform", `translate(${margin.left}, ${margin.top + height})`)
-		.call(make_h_gridlines()
-			.tickSize(-height)
-			.tickFormat("")
-		);
-
-	// add vertical grid lines
-	parentDOM.append("g")
-		.attr("class", "grid")
-		.attr("transform", `translate(${margin.left}, ${margin.top})`)
-		.call(make_v_gridlines()
-			.tickSize(-width)
-			.tickFormat("")
-		);
-	*/
 
 	/*---------------
-	* Freaking scroll
+	* Storytelling and interaction
 	----------------*/
+
+	// aux stands for auxiliary
+	// contains auxiliary lines and texts
 	const aux = parentDOM.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-	yearArray = [1983, 1992, 1995, 1999, 1998, 2000, 2005, 2011]
+	yearArray = [1983, 1992, 1995, 1999, 1998, 2000, 2005, 2011] // years that have stories to tell
 
-	// construct all lines
+	// construct all lines that indicate stories
+	// add text to indicate that year
+	// initially all opaque. Only shown when the story reaches there
 	for (let i = 0; i < yearArray.length; i++){
 		aux.append("line")
 			.attr("y1", 30)
@@ -200,6 +168,7 @@ function vis_overview(parentDOM, width, height, data) {
 			.text(yearArray[i]);
 	}
 
+	// the rectangle indicates a time range and shifts as the story goes
 	aux.append("rect")
 		.attr("x", x_scale(1983))
 		.attr("y", 0)
@@ -207,8 +176,10 @@ function vis_overview(parentDOM, width, height, data) {
 		.attr("height", height)
 		.attr("fill", "#3D405B")
 		.attr("opacity", 0.2)
-		.attr("id", "rect1")
+		.attr("id", "rect1");
 
+	// We planned to use them as scroll functions, but it did not work
+	// anyway, the same thing for "stepper"
 	const scr1 = function(){
 		console.log("scr1")
 
@@ -216,6 +187,7 @@ function vis_overview(parentDOM, width, height, data) {
 		aux.selectAll(".boundary_line")
 			.classed("opaque", true)
 
+		// show the relevant line
 		aux.select("#line_1983")
 			.classed("opaque", false)
 			.attr("opacity", 0)
@@ -223,13 +195,15 @@ function vis_overview(parentDOM, width, height, data) {
 			.attr("opacity", 1)
 			.duration(500)
 
-
+		// set all texts opaque again
 		aux.selectAll(".highlight_year")
 			.classed("opaque", true)
 
+		// show the relevant line
 		aux.select("#text_1983")
 			.classed("opaque", false)
 
+		// shift the position of the time-range rectangle
 		aux.select("#rect1")
 			.transition()
 			.attr("x",  x_scale(1983))
@@ -375,24 +349,11 @@ function vis_overview(parentDOM, width, height, data) {
 	}
 
 	let vis_scrolls = [scr1, scr2, scr3, scr4, scr5, scr6];
-/*
-	// What the hell is going on here?
-	const gs = d3.graphScroll()
-		.container(d3.select("#vis_container"))
-		.graph(d3.select("#vis_canvas"))
-		.eventId('sec1_id')
-		.sections(d3.selectAll("#step1_annotation section"))
-		.on("active", function(i){
-			console.log(i);
-			vis_scrolls[i]();
-		});
-*/
 
-	/*
-	* Try for annotation step1
-	*/
+	// initial display
 	scr1();
 
+	// Switching different "pages" of stories 
 	d3.selectAll(".step1_click").on("click", function(){
 		targetID = d3.select(this).attr("href");
 		d3.selectAll(".step1_section").classed("hidden", true);
