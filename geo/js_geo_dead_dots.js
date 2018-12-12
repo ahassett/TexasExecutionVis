@@ -175,7 +175,7 @@ function vis_map(parentDOM, width, height, data) {
 		.attr("x", 0)
 		.attr("y", -170)
 		.style("font-size", "150px")
-		.text(formatDate(startDate))
+		.text(formatDateIntoYear(startDate))
 		// .attr("transfrom", "translate(500, 0)");
 
 	function update(h) {
@@ -183,7 +183,7 @@ function vis_map(parentDOM, width, height, data) {
 		handle.attr("cx", x_slide(h));
 
 		label.attr("x", x_slide(h))
-		 	.text(formatDate(h));
+		 	.text(formatDateIntoYear(h));
 
 		// filter dataset and redraw plot
 		let newData = data.filter(function(d){
@@ -191,20 +191,63 @@ function vis_map(parentDOM, width, height, data) {
 			let thisYear = formatDateIntoYear(h);
 			let month = formatDateIntoMonth(d["date"]);
 			let thisMonth = formatDateIntoMonth(h);
-			return (year == thisYear && month == thisMonth);
+			return (year == thisYear);
 		}); // keep an eye on how to get the Year of d["Date"]
 		drawCircles(newData);
 	}
 
 	function step(){
-		update(x_slide.invert(currVal));
 		currVal = currVal + (targetVal / 200);
+		update(x_slide.invert(currVal));
+
+		let that = x_slide.invert(currVal);
+		let thee = x_slide.invert(currVal - targetVal / 200)
+		let thatYear = formatDateIntoYear(x_slide.invert(currVal));
+		let theeYear = formatDateIntoYear(x_slide.invert(currVal - targetVal / 200))
+		// tec 1
+		if (thatYear >= 1983 && theeYear < 1983){
+			d3.selectAll(".texas_text")
+				.classed("hidden", true)
+
+			d3.select("#tec1")
+				.classed("hidden", false)
+
+			clearInterval(timer);
+			indicator.text("Play");
+		}
+
+		// tec 2
+		if (thatYear >= 1998 && theeYear < 1998){
+			d3.selectAll(".texas_text")
+				.classed("hidden", true)
+
+			d3.select("#tec2")
+				.classed("hidden", false)
+
+			clearInterval(timer);
+			indicator.text("Play");
+		}
+
+		// tec 3
+		if (thatYear >= 2005 && theeYear < 2005){
+			d3.selectAll(".texas_text")
+				.classed("hidden", true)
+
+			d3.select("#tec3")
+				.classed("hidden", false)
+
+			clearInterval(timer);
+			indicator.text("Play");
+		}
+
 		if (currVal > targetVal) {
 			drawCircles(data);
 			moving = false;
 			currVal = 0;
 			clearInterval(timer);
 			indicator.text("Play");
+
+			
 		}
 	}
 
@@ -219,7 +262,9 @@ function vis_map(parentDOM, width, height, data) {
 			moving = true;
 			timer = setInterval(step, 100);
 			indicator.text("Pause");
+			d3.selectAll(".texas_text").classed("hidden", true);
 		}
 	});
+
 
 }

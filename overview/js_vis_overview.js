@@ -56,7 +56,6 @@ function vis_overview(parentDOM, width, height, data) {
 		.key((d) => d["Race"])
 		.map(data);
 
-
 	nestedData.each(function(val, key) {
 		if (key == "Other") return;
 
