@@ -17,7 +17,7 @@ h1{
 	position: relative;
 }
 
-#step1_annotation{
+.step_annotation{
 	width: 340px;
 	padding-bottom:300px;
 	position: absolute;
@@ -25,12 +25,12 @@ h1{
 	left: 800px;
 }
 
-#step1_annotation section{
+.step_annotation section{
 	/* opacity: .2; */
 	margin-bottom: 200px;
 }
 
-#step1_annotation section.graph-scroll-active{
+.step_annotation section.graph-scroll-active{
 	opacity: 1;
 }
 

@@ -1,6 +1,6 @@
 
-const HEIGHT = 1500;
-const WIDTH = 2000; //800
+const HEIGHT = 800;
+const WIDTH = 700; //800
 
 const margin = {
 	top: 10,
