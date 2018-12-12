@@ -109,7 +109,7 @@ Promise.all([
 		that["f"](prtDOM, that["width"], that["height"], data[0]);
 	}
 
-	// event listener for switching step 
+	// event listener for switching step
 	d3.selectAll(".step_link").on("click", function(d){
 		let clickedStep = d3.select(this).attr("id");
 		switchStep(clickedStep);
